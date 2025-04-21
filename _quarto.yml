@@ -1,5 +1,5 @@
 project:
-  title: "Research Template"
+  title: "X Research"
   output-dir: _products
   execute-dir: project
   pre-render: 
@@ -14,21 +14,8 @@ project:
     - "!bibliography/"
 
 author:
-  - name: Aaron Gullickson
-    orcid: 0000-0001-7237-8131
-    email: aarong@uoregon.edu
-    url: https://aarongullickson.netlify.app/
-    attributes:
-      corresponding: true
-    affiliations:
-      - id: uo
-        name: University of Oregon
-        department: Sociology
-        address: 727 PLC
-        city: Eugene
-        region: OR
-        country: USA
-        postal-code: 97405
+  - name: Xinghan Chen
+    email: xinghanc@uoregon.edu
   
 execute: 
   freeze: false
