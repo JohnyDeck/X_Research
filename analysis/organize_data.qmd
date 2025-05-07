@@ -11,3 +11,28 @@ source(here("utils","functions.R"))
 ```
 
 This quarto doc is used to organize the data.
+```{r}
+#| label: load_data
+#| include: true
+#1
+mental_health_data_1 <- read_csv(here("data", "data_raw", "1- mental-illnesses-prevalence.csv"))
+
+#2
+mental_health_data_2 <- read_csv(here("data", "data_raw", "2- burden-disease-from-each-mental-illness(1).csv"))
+
+#3
+mental_health_data_3 <- read_csv(here("data", "data_raw", "3- adult-population-covered-in-primary-data-on-the-prevalence-of-major-depression.csv"))
+
+#4
+mental_health_data_4 <- read_csv(here("data", "data_raw", "4- adult-population-covered-in-primary-data-on-the-prevalence-of-mental-illnesses.csv"))
+
+#5
+mental_health_data_5 <- read_csv(here("data", "data_raw", "5- anxiety-disorders-treatment-gap.csv"))
+
+#6
+mental_health_data_6 <- read_csv(here("data", "data_raw", "6- depressive-symptoms-across-us-population.csv"))
+
+#7
+mental_health_data_7 <- read_csv(here("data", "data_raw", "7- number-of-countries-with-primary-data-on-prevalence-of-mental-illnesses-in-the-global-burden-of-disease-study.csv"))
+
+```

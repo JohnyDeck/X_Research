@@ -38,6 +38,17 @@ This quarto doc is for writing the manuscript. This is a test citation [@alba199
 
 # Data and Methods
 
+Brief description and collection method:
+The dataset is derived from the Global Burden of Disease Study, which mainly collects the prevalence of various mental health disorders through statistical models and public health data from various countries.
+
+Collection time:
+The data collection time spans a period of many years, from 1990 to 2019.
+
+Dataset size:
+This dataset contains decades of data from multiple countries, and each record represents the prevalence of a specific country, year, and specific mental health disorder. The total number of rows in the dataset is about 13,500 rows
+
+Generalizability:
+This dataset contains mental health data from multiple countries, but there may be some deviations due to different data collection methods and medical conditions in different countries. Therefore, although the data is suitable for global comparison, the data of some countries or regions may not be fully representative, and in some regions it may need to be combined with local clinical data for analysis.
 # Results
 
 # Conclusions
