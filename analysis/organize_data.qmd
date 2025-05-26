@@ -6,33 +6,96 @@ title: "Organize Data Notebook"
 #| label: setup
 #| include: false
 library(here)
+library(readxl)
 source(here("utils","check_packages.R"))
 source(here("utils","functions.R"))
 ```
 
-This quarto doc is used to organize the data.
 ```{r}
-#| label: load_data
+#| label: load_data (HIERARCHY)
 #| include: true
-#1
-mental_health_data_1 <- read_csv(here("data", "data_raw", "1- mental-illnesses-prevalence.csv"))
+loc_hier <- readxl::read_excel(
+  here("data", "data_raw", "GBD_LOCATION_HIERARCHY.XLSX")
+) |>
+  select(
+    location_id   = `Location ID`,
+    location_name = `Location Name`
+  )
 
-#2
-mental_health_data_2 <- read_csv(here("data", "data_raw", "2- burden-disease-from-each-mental-illness(1).csv"))
+cause_hier <- readxl::read_excel(
+  here("data", "data_raw", "CAUSE_HIERARCHY.XLSX")
+) |>
+  select(
+    cause_id   = `Cause ID`,
+    cause_name = `Cause Name`
+  )
 
-#3
-mental_health_data_3 <- read_csv(here("data", "data_raw", "3- adult-population-covered-in-primary-data-on-the-prevalence-of-major-depression.csv"))
+codebook <- readxl::read_excel(
+  here("data", "data_raw", "CODEBOOK.xlsx"),
+) |> 
+  transmute(
+    cause_id   = as.integer(cause_id)
+  )
+```
 
-#4
-mental_health_data_4 <- read_csv(here("data", "data_raw", "4- adult-population-covered-in-primary-data-on-the-prevalence-of-mental-illnesses.csv"))
+```{r}
+#| label: load_data(YLL)
+#| include: true
+yll_files <- list.files(
+  here("data","data_raw"),
+  pattern = "YLL.*RATE.*\\.CSV$",
+  full.names = TRUE
+)
 
-#5
-mental_health_data_5 <- read_csv(here("data", "data_raw", "5- anxiety-disorders-treatment-gap.csv"))
+yll_rate <- tibble(path = yll_files) |>
+  mutate(
+    fname       = basename(path),
+    location_id = str_extract(fname, "^[0-9]+") |> as.integer(),
+    sex         = if_else(str_detect(fname, "(?i)MALE"), "Male", "Female"),
+    data        = map(path, \(f) read_csv(f, show_col_types = FALSE) |> 
+                         select(-any_of(c("location_id","sex","location_name"))))
+  ) |>
+  select(-path, -fname) |>
+  unnest(data)
+```
 
-#6
-mental_health_data_6 <- read_csv(here("data", "data_raw", "6- depressive-symptoms-across-us-population.csv"))
+```{r}
+#| label: clean data
+#| include: true
 
-#7
-mental_health_data_7 <- read_csv(here("data", "data_raw", "7- number-of-countries-with-primary-data-on-prevalence-of-mental-illnesses-in-the-global-burden-of-disease-study.csv"))
+cleaned_dataset <- yll_rate |> 
+  mutate(
+    across(where(is.numeric), ~ na_if(.x, -999))
+  ) |> 
+  left_join(loc_hier, by = "location_id") |> 
+  left_join(codebook, by = "cause_id") |> 
+  mutate(
+    location_id   = factor(location_id),
+    location_name = factor(location_name),
+    sex           = factor(sex, levels = c("Male", "Female")),
+    cause_id      = factor(cause_id),
+    cause_name    = factor(cause_name),
+    age_group_id  = factor(age_group_id),
+    year          = as.integer(year_id)
+  ) |> 
+  select(
+    location_id, location_name,
+    sex, year, age_group_id,
+    cause_id, cause_name,
+    val
+  )
 
+```
+
+```{r}
+#| label: Save
+#| include: true
+
+
+historical <- cleaned_dataset |> filter(year <= 2021)
+forecast   <- cleaned_dataset |> filter(year >= 2022)
+save(historical, file = here("data", "data_constructed", "historical_YLL_rate.RData"))
+save(forecast,   file = here("data", "data_constructed", "forecast_YLL_rate.RData"))
+
+save(forecast, file = here("data","data_constructed","analytical_data.RData"))
 ```
