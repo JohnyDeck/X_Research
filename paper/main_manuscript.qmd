@@ -32,23 +32,48 @@ source(here("utils","functions.R"))
 
 # Introduction
 
-This quarto doc is for writing the manuscript. This is a test citation [@alba1990].
+1. Research question
 
-# Background
+How do sociocultural factors mediate the association between smoking prevalence and its health burden at different geographic levels?
+
+2. Literature relevance and gaps/strengths
+
+The Global Burden of Disease Study systematically depicts smoking trends and their health effects, and provides historical estimates covering 1990–2021 and projections to 2050 (GBD 2021). At the same time, sociocultural studies have also shown that there are multiple social factors that influence health behaviors and policy compliance.
+
+However, few studies have combined dynamic smoking predictions with these sociocultural factors. We still lack a systematic and in-depth understanding of how the sociocultural environment in different regions mediates future smoking-related health burdens.
+
+3. Previous research and improvement
+
+Previous research:
+As mentioned in the original data, the Global Burden of Disease Study has systematically assessed the number of smoking-related deaths and DALYs in various countries from 1990–2019, and published prevalence and mortality projections to 2050. Sociocultural studies have also shown that there are multiple social factors that influence health behaviors and policy compliance.
+
+Improvements:
+
+Rely on the "Cause, REI & Location Hierarchies" data to refine the geographical level.
+
+Integrate the dynamic prediction data of smoking with cultural variables to build a model to quantify the changes in cultural regulation effects over time
 
 # Data and Methods
 
 Brief description and collection method:
-The dataset is derived from the Global Burden of Disease Study, which mainly collects the prevalence of various mental health disorders through statistical models and public health data from various countries.
+
+The original data all come from the Global Burden of Disease Study 2021, which consists of multiple interlinked data.
+
+The first source (Global Burden of Disease Study 2021 (GBD 2021) Cause, REI, and Location Hierarchies) provides a complete hierarchy of disease causes, risk exposure categories, and geographic units maintained by IHME.
+
+The second source (Global Burden of Disease Study 2021 (GBD 2021) Smoking Mortality and Prevalence Forecasts 2022-2050) combines historical estimates of smoking prevalence and smoking-attributable mortality (1990-2021) with Bayesian model-based forecasts (2022-2050).
 
 Collection time:
-The data collection time spans a period of many years, from 1990 to 2019.
+
+Data collection covers the period from 1990 to 2021.
 
 Dataset size:
-This dataset contains decades of data from multiple countries, and each record represents the prevalence of a specific country, year, and specific mental health disorder. The total number of rows in the dataset is about 13,500 rows
+
+The data is divided into two parts, Cause, REI & Location Hierarchies contains 7200 data, and Smoking Mortality & Prevalence Forecasts contains 25600 rows of data.
 
 Generalizability:
-This dataset contains mental health data from multiple countries, but there may be some deviations due to different data collection methods and medical conditions in different countries. Therefore, although the data is suitable for global comparison, the data of some countries or regions may not be fully representative, and in some regions it may need to be combined with local clinical data for analysis.
+
+The data provide comprehensive indicators covering diseases, risks, and geographies, and are well suited for cross-national and temporal analysis. However, for regions with less data or greater variability, projection uncertainty is higher.
 # Results
 
 # Conclusions
