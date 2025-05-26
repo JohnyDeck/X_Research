@@ -17,5 +17,5 @@ desktop.ini
 _products
 _freeze
 # ignore anything in the constructed data directory
-data/data_constructed/*
+# data/data_constructed/*
 
