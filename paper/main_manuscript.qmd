@@ -33,47 +33,52 @@ source(here("utils","functions.R"))
 # Introduction
 
 1. Research question
-
-How do sociocultural factors mediate the association between smoking prevalence and its health burden at different geographic levels?
+How does the level of national economic development, measured by GDP per capita, affect smoking prevalence between 1990 and 2019?
 
 2. Literature relevance and gaps/strengths
 
-The Global Burden of Disease Study systematically depicts smoking trends and their health effects, and provides historical estimates covering 1990–2021 and projections to 2050 (GBD 2021). At the same time, sociocultural studies have also shown that there are multiple social factors that influence health behaviors and policy compliance.
+The Global Burden of Disease Study 2019 (GBD 2019) provides standardized country-level estimates of smoking prevalence and number of smokers for more than 200 countries from 1990 to 2019.
 
-However, few studies have combined dynamic smoking predictions with these sociocultural factors. We still lack a systematic and in-depth understanding of how the sociocultural environment in different regions mediates future smoking-related health burdens.
+Economics and public health scholars have shown that GDP per capita is correlated with both individual tobacco use and the stringency of tobacco control policies.
+
+To date, no comprehensive panel data analysis has been able to reveal when and to what extent growth in national income has driven changes in smoking prevalence and total number of smokers over time.
 
 3. Previous research and improvement
 
 Previous research:
-As mentioned in the original data, the Global Burden of Disease Study has systematically assessed the number of smoking-related deaths and DALYs in various countries from 1990–2019, and published prevalence and mortality projections to 2050. Sociocultural studies have also shown that there are multiple social factors that influence health behaviors and policy compliance.
+GBD collaborators mapped global smoking prevalence trends and estimated the number of smokers from 1990 to 2019.
 
 Improvements:
 
-Rely on the "Cause, REI & Location Hierarchies" data to refine the geographical level.
-
-Integrate the dynamic prediction data of smoking with cultural variables to build a model to quantify the changes in cultural regulation effects over time
+Combined the historical dataset of GBD smoking prevalence and number of smokers in 2019 with the annual per capita GDP series to capture the co-evolution over time. Investigated how income growth trajectories affect smoking prevalence in different economic contexts, and explored whether economic development accelerates or suppresses the smoking trend and the growth of the smoker population.
 
 # Data and Methods
 
 Brief description and collection method:
 
-The original data all come from the Global Burden of Disease Study 2021, which consists of multiple interlinked data.
+The original data come from two publicly available sources. 
 
-The first source (Global Burden of Disease Study 2021 (GBD 2021) Cause, REI, and Location Hierarchies) provides a complete hierarchy of disease causes, risk exposure categories, and geographic units maintained by IHME.
+The first is the GBD 2019 Smoking Tobacco Use Prevalence dataset, which provides annual, country-level estimates of smoking prevalence  and total number of smokers for over 200 countries from 1990 to 2019. 
 
-The second source (Global Burden of Disease Study 2021 (GBD 2021) Smoking Mortality and Prevalence Forecasts 2022-2050) combines historical estimates of smoking prevalence and smoking-attributable mortality (1990-2021) with Bayesian model-based forecasts (2022-2050).
+The second source is the World Bank GDP per capita series, reporting annual GDP per capita (current US $) for the same set of countries, drawn from official national-accounts data and standardized for cross-country comparability.
 
 Collection time:
 
-Data collection covers the period from 1990 to 2021.
+Data collection covers the period from 1990 to 2019
 
 Dataset size:
 
-The data is divided into two parts, Cause, REI & Location Hierarchies contains 7200 data, and Smoking Mortality & Prevalence Forecasts contains 25600 rows of data.
+The data is divided into two parts:
+
+GBD 2019 Smoking Prevalence contains 24,000 data
+
+World Bank GDP per capita data series contains 5,800 data
 
 Generalizability:
 
-The data provide comprehensive indicators covering diseases, risks, and geographies, and are well suited for cross-national and temporal analysis. However, for regions with less data or greater variability, projection uncertainty is higher.
+These data cover more than 200 countries between 1990 and 2019 and are well suited for analyzing the relationship between economic growth and smoking behavior. 
+
+However, model-based estimates of smoking prevalence may be less accurate in regions where survey data are sparse. Similarly, GDP per capita data may misrepresent true economic activity in countries with variable data quality.
 # Results
 
 # Conclusions
