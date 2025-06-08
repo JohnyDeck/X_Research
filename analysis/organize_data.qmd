@@ -12,27 +12,27 @@ source(here("utils","functions.R"))
 ```
 
 ```{r}
-#| label: load_data (HIERARCHY)
+#| label: load_data
 #| include: true
 prev <- read_csv(
   here("data", "data_raw", "IHME_GBD_2019_SMOKING_TOB_1990_2019_PREV_Y2021M05D27.CSV")) |> 
-  rename(
-    location_id = location_id,
-    location_name = location_name,
-    year = year_id,
-    sex = sex_name,
-    age_group_id = age_group_id,
-    smoking_prev = val
+  select(
+    location_id,
+    location_name,
+    year           = year_id,
+    sex            = sex_name,
+    age_group_id,
+    smoking_prev   = val
   )
 
 num <- read_csv(
   here("data", "data_raw", "IHME_GBD_2019_SMOKING_TOB_1990_2019_NUM_SMOKERS_Y2021M05D27.CSV")) |> 
-  rename(
-    location_id = location_id,
-    year = year_id,
-    sex = sex_name,
-    age_group_id = age_group_id,
-    num_smokers = val
+  select(
+    location_id,
+    year           = year_id,
+    sex            = sex_name,
+    age_group_id,
+    num_smokers    = val
   )
 smoking <- left_join(
   prev,
@@ -42,7 +42,7 @@ smoking <- left_join(
 ```
 
 ```{r}
-#| label: load_data(YLL)
+#| label: load_data
 #| include: true
 gdp_raw <- read_csv(
   here("data", "data_raw", "API_NY.GDP.MKTP.CD_DS2_en_csv_v2_2752.csv"),
@@ -50,16 +50,16 @@ gdp_raw <- read_csv(
 )
 
 gdp <- gdp_raw |> 
-  select(`Country Name`, `Country Code`, `1990`:`2019`) |>  
+  select(
+    location_name = `Country Name`,
+    location_code = `Country Code`,
+    `1990`:`2019`
+  ) |>
   pivot_longer(
     cols = `1990`:`2019`,
     names_to = "year",
     values_to = "gdp_per_capita",
     names_transform = list(year = as.integer)
-  ) |> 
-  rename(
-    location_name = `Country Name`,
-    location_code = `Country Code`
   )
 ```
 
