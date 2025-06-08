@@ -14,75 +14,73 @@ source(here("utils","functions.R"))
 ```{r}
 #| label: load_data (HIERARCHY)
 #| include: true
-loc_hier <- readxl::read_excel(
-  here("data", "data_raw", "GBD_LOCATION_HIERARCHY.XLSX")
-) |>
-  select(
-    location_id   = `Location ID`,
-    location_name = `Location Name`
+prev <- read_csv(
+  here("data", "data_raw", "IHME_GBD_2019_SMOKING_TOB_1990_2019_PREV_Y2021M05D27.CSV")) |> 
+  rename(
+    location_id = location_id,
+    location_name = location_name,
+    year = year_id,
+    sex = sex_name,
+    age_group_id = age_group_id,
+    smoking_prev = val
   )
 
-cause_hier <- readxl::read_excel(
-  here("data", "data_raw", "CAUSE_HIERARCHY.XLSX")
-) |>
-  select(
-    cause_id   = `Cause ID`,
-    cause_name = `Cause Name`
+num <- read_csv(
+  here("data", "data_raw", "IHME_GBD_2019_SMOKING_TOB_1990_2019_NUM_SMOKERS_Y2021M05D27.CSV")) |> 
+  rename(
+    location_id = location_id,
+    year = year_id,
+    sex = sex_name,
+    age_group_id = age_group_id,
+    num_smokers = val
   )
-
-codebook <- readxl::read_excel(
-  here("data", "data_raw", "CODEBOOK.xlsx"),
-) |> 
-  transmute(
-    cause_id   = as.integer(cause_id)
-  )
+smoking <- left_join(
+  prev,
+  num,
+  by = c("location_id", "location_name", "year", "sex", "age_group_id")
+)
 ```
 
 ```{r}
 #| label: load_data(YLL)
 #| include: true
-yll_files <- list.files(
-  here("data","data_raw"),
-  pattern = "YLL.*RATE.*\\.CSV$",
-  full.names = TRUE
+gdp_raw <- read_csv(
+  here("data", "data_raw", "API_NY.GDP.MKTP.CD_DS2_en_csv_v2_2752.csv"),
+  skip = 4
 )
 
-yll_rate <- tibble(path = yll_files) |>
-  mutate(
-    fname       = basename(path),
-    location_id = str_extract(fname, "^[0-9]+") |> as.integer(),
-    sex         = if_else(str_detect(fname, "(?i)MALE"), "Male", "Female"),
-    data        = map(path, \(f) read_csv(f, show_col_types = FALSE) |> 
-                         select(-any_of(c("location_id","sex","location_name"))))
-  ) |>
-  select(-path, -fname) |>
-  unnest(data)
+gdp <- gdp_raw |> 
+  select(`Country Name`, `Country Code`, `1990`:`2019`) |>  
+  pivot_longer(
+    cols = `1990`:`2019`,
+    names_to = "year",
+    values_to = "gdp_per_capita",
+    names_transform = list(year = as.integer)
+  ) |> 
+  rename(
+    location_name = `Country Name`,
+    location_code = `Country Code`
+  )
 ```
 
 ```{r}
 #| label: clean data
 #| include: true
-
-cleaned_dataset <- yll_rate |> 
-  mutate(
-    across(where(is.numeric), ~ na_if(.x, -999))
-  ) |> 
-  left_join(loc_hier, by = "location_id") |> 
-  left_join(codebook, by = "cause_id") |> 
+cleaned_dataset <- smoking |> 
+  mutate(across(where(is.numeric), ~ na_if(.x, -999))) |> 
   mutate(
     location_id   = factor(location_id),
     location_name = factor(location_name),
     sex           = factor(sex, levels = c("Male", "Female")),
-    cause_id      = factor(cause_id),
-    cause_name    = factor(cause_name),
     age_group_id  = factor(age_group_id),
-    year          = as.integer(year_id)
+    year          = as.integer(year)) |> 
+  left_join(
+    gdp,
+    by = c("location_name", "year")
   ) |> 
   select(
-    location_id, location_name,
-    sex, year, age_group_id,
-    cause_id, cause_name,
-    val
+    location_id, location_name, year, sex, age_group_id,
+    smoking_prev, num_smokers, gdp_per_capita
   )
 
 ```
@@ -90,12 +88,5 @@ cleaned_dataset <- yll_rate |>
 ```{r}
 #| label: Save
 #| include: true
-
-
-historical <- cleaned_dataset |> filter(year <= 2021)
-forecast   <- cleaned_dataset |> filter(year >= 2022)
-save(historical, file = here("data", "data_constructed", "historical_YLL_rate.RData"))
-save(forecast,   file = here("data", "data_constructed", "forecast_YLL_rate.RData"))
-
-save(forecast, file = here("data","data_constructed","analytical_data.RData"))
+save(cleaned_dataset, file = here("data", "data_constructed", "analytical_data.RData"))
 ```
