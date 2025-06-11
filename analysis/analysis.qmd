@@ -40,6 +40,7 @@ df |>
 ```{r}
 #| label: scatter
 #| fig.cap: "Smoking vs. GDP per Capita"
+#| message: false
 df |>
   filter(!is.na(smoking_prev), !is.na(gdp_per_capita)) |>
   ggplot(aes(x = gdp_per_capita, y = smoking_prev)) +
