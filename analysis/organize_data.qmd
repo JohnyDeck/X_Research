@@ -29,6 +29,7 @@ num <- read_csv(
   here("data", "data_raw", "IHME_GBD_2019_SMOKING_TOB_1990_2019_NUM_SMOKERS_Y2021M05D27.CSV")) |> 
   select(
     location_id,
+    location_name,
     year           = year_id,
     sex            = sex_name,
     age_group_id,
@@ -68,6 +69,7 @@ gdp <- gdp_raw |>
 #| include: true
 cleaned_dataset <- smoking |> 
   mutate(across(where(is.numeric), ~ na_if(.x, -999))) |> 
+  filter(location_name %in% c("United States of America", "China", "India", "Ethiopia")) |> 
   mutate(
     location_id   = factor(location_id),
     location_name = factor(location_name),
@@ -79,9 +81,9 @@ cleaned_dataset <- smoking |>
     by = c("location_name", "year")
   ) |> 
   select(
-    location_id, location_name, year, sex, age_group_id,
-    smoking_prev, num_smokers, gdp_per_capita
-  )
+  location_id, location_name, year, sex,
+  smoking_prev, num_smokers, gdp_per_capita
+)
 
 ```
 

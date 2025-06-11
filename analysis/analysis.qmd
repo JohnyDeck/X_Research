@@ -8,6 +8,66 @@ title: "Research Analysis Notebook"
 library(here)
 source(here("utils","check_packages.R"))
 source(here("utils","functions.R"))
+
+library(modelsummary)
+library(gt)
+library(plm)
+
+load(here("data", "data_constructed", "analytical_data.RData")) 
+df <- cleaned_dataset 
 ```
 
-This quarto doc is used to analyze the data.
+```{r}
+#| label: trend
+#| fig.cap: "Country"
+df |>
+  group_by(location_name) |>
+  arrange(year) |>
+  mutate(smoking_scaled = smoking_prev * max(gdp_per_capita, na.rm=TRUE)) |>
+  ggplot(aes(x = year)) +
+    geom_line(aes(y = gdp_per_capita), color = "blue", linewidth = 1) +
+    geom_line(aes(y = smoking_scaled), color = "red", linetype = "dashed") +
+    facet_wrap(~ location_name, scales = "free_y") +
+    scale_y_continuous(
+      name = "GDP per Capita",
+      sec.axis = sec_axis(
+        ~ . / max(df$gdp_per_capita, na.rm=TRUE),
+        name = "Smoking (%)"
+      )
+    ) +
+    labs(x = "Year", title = "GDP vs. Smoking")
+```
+```{r}
+#| label: scatter
+#| fig.cap: "Smoking vs. GDP per Capita"
+df |>
+  filter(!is.na(smoking_prev), !is.na(gdp_per_capita)) |>
+  ggplot(aes(x = gdp_per_capita, y = smoking_prev)) +
+    geom_point(alpha = 0.4) +
+    geom_smooth(method = "lm", se = FALSE) +
+    scale_x_log10() +
+    facet_wrap(~ location_name) +
+    labs(
+      x = "GDP per Capita (log)",
+      y = "Smoking (%)",
+      title = "Smoking vs. GDP per Capita (Linear)"
+    )
+```
+```{r}
+#| label: model
+m1 <- lm(smoking_prev ~ log(gdp_per_capita) + sex + factor(location_name), data = df)
+m2 <- lm(smoking_prev ~ log(gdp_per_capita) * year + sex, data = df)
+models <- list(
+  "No Interaction"         = m1,
+  "GDP × Year Interaction" = m2
+)
+modelsummary(
+  models,
+  output   = "gt",
+  gof_map = c(
+    "R-squared" = "r.squared",
+    "AIC"       = "AIC"
+  ),
+  title = "Model Fit Statistics"
+)
+```
